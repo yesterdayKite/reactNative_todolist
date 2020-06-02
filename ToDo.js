@@ -1,17 +1,19 @@
 import React, {Component} from "react";
 //import React from "react"로만 하면 밑에 TodoClass가
 //export default class ToDo extends React.Component {} 라고 써야한다.
-import {View, Text, TouchableOpacity, StyleSheet, Dimensions} from "react-native";
+import {View, Text, TouchableOpacity, StyleSheet, Dimensions, TextInput} from "react-native";
 
 const {width, height} = Dimensions.get("window");
 
 export default class ToDo extends Component{
 	state = {
 		isEditing : false,
-		isCompleted : false
+		isCompleted : false,
+		todoValue : ""
 	};
 	render(){
-		const {isCompleted, isEditing} = this.state;
+		const {isCompleted, isEditing, todoValue} = this.state;
+		const {text} = this.props;
 		return(
 			<View style = {styles.container}>
 				<View style = {styles.column}>
@@ -20,14 +22,30 @@ export default class ToDo extends Component{
 						styles.circle,
 						isCompleted ? styles.completedCircle : styles.uncompletedCircle]} />
 				</TouchableOpacity>
-				<Text style = {[
+				{isEditing ?
+				(<TextInput
+					style = {[
+						styles.input,
+						styles.text,
+						isCompleted ? styles.completedText : styles.uncompletedText
+					]}
+					value = {todoValue}
+					multiline = {true}
+					onChangeText = {this._controlInput}
+					returnKeyType = {"done"}
+					onBlur = {this._finishEditing}
+				/>) :
+				(<Text
+					style = {[
 					styles.text,
 					isCompleted ? styles.completedText : styles.uncompletedText
-					]}>Hello I'm a todo</Text>
+					]}>{text}
+				</Text>
+				)}
 				</View>
 					{isEditing ? (
 						<View style = {styles.actions}>
-							<TouchableOpacity onPressout = {this._finishEditing}>
+							<TouchableOpacity onPress = {this._finishEditing}>
 								<View style = {styles.actionContainer}>
 									<Text style = {styles.actionText}>✔️</Text>
 								</View>
@@ -58,14 +76,21 @@ export default class ToDo extends Component{
 		});
 	};
 	_startEditing = () => {
+		const { text} = this.props;
 		this.setState({
-			isEditing : true
+			isEditing : true,
+			todoValue : text
 		});
 	};
 	_finishEditing = () => {
 		this.setState({
 			isEditing : false
 		});
+	};
+	_controlInput = (text) => {
+		this.setState({
+			todoValue : text
+		})
 	}
 }
 
@@ -118,5 +143,10 @@ const styles = StyleSheet.create({
 	actionContainer : {
 		marginVertical : 10,
 		marginHorizontal : 10,
+	},
+	input : {
+		marginVertical : 15,
+		width : width / 2
+
 	}
 });

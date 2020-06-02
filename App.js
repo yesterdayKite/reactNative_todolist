@@ -10,6 +10,7 @@ export default class App extends React.Component {
   };
   render() {
   const {newToDo} = this.setState;
+  const {text} = this.props;
   return (
     <View style={styles.container}>
       <StatusBar barStyle= "light-content"/>
@@ -25,7 +26,7 @@ export default class App extends React.Component {
         autoCorrect = {false}
         />
         <ScrollView contentContainerStyle = {styles.toDos}>
-          <ToDo/>
+          <ToDo text = {"hello I'm a ToDo~~~~"}/>
         </ScrollView>
       </View>
     </View>
